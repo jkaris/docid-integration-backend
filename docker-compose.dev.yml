@@ -15,8 +15,10 @@ services:
             timeout: 10s
             retries: 10
         volumes:
-          - ./initdb:/docker-entrypoint-initdb.d/
-          - postgres_data_dev:/var/lib/postgresql/data/
+            #          - ./initdb:/docker-entrypoint-initdb.d/
+            - postgres_data_dev:/var/lib/postgresql/data/
         ports:
             - "5432:5432"
         restart: always
+volumes:
+    postgres_data_dev:
