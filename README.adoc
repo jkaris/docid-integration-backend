@@ -1,0 +1,158 @@
+:toc:
+
+= DOCID Integration Backend
+
+image::images/docid-app.png[alt="DOCID Integration App"]
+
+== Project Overview
+
+Add overview here
+
+=== Structure Overview
+TBD
+
+The general folder structure for the project can be seen below:
+
+----
+├── docid_app              # Project folder with project files
+├── .dockerignore          # Includes files/folders to be excluded from image building
+├── .editorconfig          # Configuration defining consistent coding styles and formatting
+├── .env.sample          # Includes environment variables for the local environment
+├── .gitignore             # Includes files/folders to be excluded from git commits
+├── Dockerfile.dev         # Instructions specifying how to build docker images.
+├── LICENSE                # License for this project
+├── Makefile               # List of utility commands to help developers
+├── Pipfile                # Configuration for virtual environments, and dependencies for Python
+├── Pipfile.lock           # Includes versions of the dependencies and transitive dependencies
+├── README.adoc            # Readme file for this project
+├── docker-compose.dev.yml # Configuration defining multiple Docker containers used in this app
+├── pytest.ini             # Configuration file for unit testing using pytest framework
+----
+To perform some operations, a link:Makefile[Makefile] with a set of `make`
+commands is provided. In order to run these commands, the GNU `make` utility
+needs to be installed. Some of the commands are listed below.
+
+==== System Prerequisites
+TBD
+
+TIP:  Please refer to
+TBD
+
+=== Software
+TBD
+
+All Python package requirements are listed in
+link:Pipfile[`Pipfile`]. The initial requirements include:
+
+* 123
+* 456
+
+All third-party packages are listed in the link:Pipfile[Pipfile] including the ones not listed here.
+
+=== QuickStart
+TBD
+
+To build and setup the application from the ground up, ignoring previously build cached layers, just type:
+
+[source,bash]
+----
+make build-with-no-cache
+----
+
+You can also build with the usual build command by typing:
+[source,bash]
+----
+make build
+----
+
+This will create the necessary Docker containers and install the required
+Python packages.
+
+To start the services while seeing the log, type:
+
+[source,bash]
+----
+make start-app
+----
+Alternatively, to start the services in the background (detached mode) where you will not see the logs in the terminal, type:
+[source,bash]
+----
+make start-app-detached
+----
+Once the services have started, Flask should be running in port 8000 and Postgres at 5432. You can change these values in the .env file and link:docker-compose.dev.yml[docker-compose] file.
+
+To stop the services, type:
+[source,bash]
+----
+make stop-app
+----
+
+Alternatively, to stop services and remove volumes that contain persisted data, type:
+[source,bash]
+----
+make delete-app-volumes
+----
+
+To print out the logs, type:
+[source,bash]
+----
+make print-logs
+----
+
+Alternatively, to print out logs interactively showing what is happening in the services, type:
+[source,bash]
+----
+make print-logs-interactive
+----
+
+The other commands include:
+
+* `make init-app-db` which creates new database migration files based on the changes you make to your models, if any.
+* `make shell` which starts a Linux shell (bash) in the app container
+* `make app-shell` which starts a flask python shell in the app container
+
+==== Database
+
+To start the database will be empty.
+
+To manually migrate the database, run:
+
+----
+make init-app-db
+----
+
+
+===== Application data
+
+TBD
+
+=== Linting
+
+https://github.com/psf/black[Black] is used to automatically format and lint
+files. The `make lint-check` command checks that the project is correctly
+formatted.
+
+You can set up your editor to automatically format Python files using Black
+following the instructions https://github.com/psf/black#editor-integration[on Black's GitHub
+page].
+
+You can also use the `make lint-fix` command to automatically format all
+Python files in the project.
+
+=== Testing
+
+TBD
+
+=== REST API
+
+TBD
+
+==== API Documentation
+
+To access the API documentation, visit:
+
+TBD
+
+===== Endpoints
+
+TBD
