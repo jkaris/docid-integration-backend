@@ -24,11 +24,13 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    from . import auth, doi, save, utils
+    from . import auth, doi, save, utils, insert_data
     db.init_app(docid_app)
     # Create all database tables
     with docid_app.app_context():
         init_db()
+        insert_data.insert_data()
+        insert_data.generate_pids()
     docid_app.register_blueprint(auth.bp)
     docid_app.register_blueprint(doi.bp)
     docid_app.register_blueprint(utils.bp)

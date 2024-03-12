@@ -1,7 +1,6 @@
 from flask import (
     Blueprint, request, jsonify, g
 )
-# from tccapp.db import get_db
 
 bp = Blueprint('utils', __name__, url_prefix='/utils')
 
