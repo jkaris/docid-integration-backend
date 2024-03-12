@@ -5,11 +5,15 @@ from flask import (
     request,
     jsonify,
     current_app,
+    g
 )
 from datetime import datetime
-from tccapp.db import get_db
+
+# from tccapp.db import get_db
 
 bp = Blueprint('save', __name__, url_prefix='/save')
+
+
 def save_file_info(file_name, file_path, file_extension, upload_date):
     mydb = sqlite3.connect(
         current_app.config['DATABASE'],
@@ -18,27 +22,29 @@ def save_file_info(file_name, file_path, file_extension, upload_date):
     cursor = mydb.cursor()
     cursor.execute("""
         INSERT INTO file_record (file_name, file_path, file_extension, upload_date)
-        VALUES (?, ?, ?, ?) 
+        VALUES (?, ?, ?, ?)
     """, (file_name, file_path, file_extension, upload_date))
     mydb.commit()
     last_id = cursor.lastrowid
     return last_id
 
+
 def save_basic_info(title, pub_date, doi, resource_type_id, description, family_name,
-        given_name, identifier, affiliation, role, file_id
-):
+                    given_name, identifier, affiliation, role, file_id
+                    ):
     """
     Save record into the database.
     """
-    db = get_db()
+    db = g.get_db()
     db.execute("""
-        INSERT INTO basic_information (title, pub_date, doi, 
+        INSERT INTO basic_information (title, pub_date, doi,
         resource_type_id, description, family_name, given_name, identifier, affiliation, role,file_id)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (title, pub_date, doi, resource_type_id, description, family_name, given_name,
               identifier, affiliation, role, file_id))
     db.commit()
     db.close()
+
 
 @bp.route('/file-info', methods=['POST'])
 def save_file_record():
@@ -110,5 +116,3 @@ def save_basic_info_record():
     except Exception as e:
         # db.session.rollback()
         return jsonify({'error': str(e)}), 500
-
-

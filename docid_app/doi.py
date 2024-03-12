@@ -1,9 +1,8 @@
 import random
 import requests
 from flask import (
-    Blueprint, request, jsonify,
+    Blueprint, request, jsonify, g
 )
-from tccapp.db import get_db
 
 bp = Blueprint('doi', __name__, url_prefix='/doi')
 
@@ -36,7 +35,7 @@ def get_docid():
     Get Doc ID from PID log table.
     """
     try:
-        db = get_db()
+        db = g.db.get_db()
         random_datacite_pid = db.execute(
             "SELECT pid FROM pid_log ORDER BY RANDOM() LIMIT 1"
         ).fetchone()

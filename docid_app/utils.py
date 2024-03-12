@@ -1,14 +1,14 @@
 from flask import (
-    Blueprint, request, jsonify
+    Blueprint, request, jsonify, g
 )
-from tccapp.db import get_db
+# from tccapp.db import get_db
 
 bp = Blueprint('utils', __name__, url_prefix='/utils')
 
 @bp.route('/resource-types', methods=['GET'])
 def get_resource_types():
     try:
-        db = get_db()
+        db = g.get_db()
         resource_types= db.execute("SELECT id, name FROM resource_types").fetchall()
         resource_types_json = [{'id': row[0], 'name': row[1]} for row in resource_types]
         db.close()

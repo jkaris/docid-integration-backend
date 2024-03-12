@@ -1,11 +1,12 @@
 import functools
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify
+    Blueprint, g, redirect, request, session, url_for, jsonify
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from .db import get_db
+from .models import AppUser
+from .db import db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -13,67 +14,49 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 @bp.route('/register', methods=['POST'])
 def register():
     data = request.json
-    print(data)
-    db = get_db()
     error = None
+    first_name = data.get('firstName')
+    last_name = data.get('lastName')
+    email = data.get('email')
+    password = data.get('password')
 
-    if not data.get('firstName'):
-        error = 'First name is required.'
-    elif not data.get('lastName'):
-        error = 'Last name is required.'
-    elif not data.get('email'):
-        error = 'Email is required.'
-    elif not data.get('password'):
-        error = 'Password is required.'
-    elif db.execute(
-        'SELECT user_id FROM appuser WHERE email = ?', (data['email'],)
-    ).fetchone() is not None:
-        error = f'User already registered.'
+    # Check if the username or email already exists
+    existing_email = AppUser.query.filter_by(email=email).first()
+    if existing_email:
+        error = 'User already exists'
+        return jsonify({'message': error}), 400
 
-    if error is None:
-        db.execute(
-            'INSERT INTO appuser (first_name, last_name, email, password) VALUES (?, ?, ?, ?)',
-            (data['firstName'], data['lastName'], data['email'], generate_password_hash(data['password']))
-        )
-        db.commit()
-        return jsonify({'message': 'Registration successful'})
+    # Hash the password
+    hashed_password = generate_password_hash(password)
 
-    return jsonify({'message': error}), 400
+    # Create a new user object
+    new_user = AppUser(first_name=first_name, last_name=last_name, email=email, password=hashed_password)
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify({'message': 'Registration successful'})
+
 
 @bp.route('/login', methods=['POST'])
 def login():
     data = request.json
-    db = get_db()
     error = None
-    user = db.execute(
-        'SELECT * FROM appuser WHERE email = ?', (data['email'],)
-    ).fetchone()
+    email = data.get('email')
+    password = data.get('password')
+    user = AppUser.query.filter(AppUser.email == email).first()
 
-    if user is None or not check_password_hash(user['password'], data['password']):
-        error = 'Incorrect password.'
-
-    if error is None:
-        session.clear()
-        session['user_id'] = user['user_id']
+    if user and check_password_hash(user.password, password):
+        session['user_id'] = user.user_id
         return jsonify({'message': 'Login successful'})
-
-    return jsonify({'error': error}), 401
-
-@bp.before_app_request
-def load_logged_in_user():
-    user_id = session.get('user_id')
-
-    if user_id is None:
-        g.user = None
     else:
-        g.user = get_db().execute(
-            'SELECT * FROM appuser WHERE id = ?', (user_id,)
-        ).fetchone()
+        error = 'Invalid username/email or password.'
+        return jsonify({'message': error}), 401
+
 
 @bp.route('/logout', methods=['POST'])
 def logout():
     session.clear()
-    return jsonify({'message': 'Logout successful'})
+    return jsonify({'message': 'You have been logged successful'})
+
 
 def login_required(view):
     @functools.wraps(view)
