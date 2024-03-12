@@ -2,16 +2,17 @@ from flask import (
     Blueprint, request, jsonify, g
 )
 
+from .db import db
+
+from .models import ObjectCategory
+
 bp = Blueprint('utils', __name__, url_prefix='/utils')
 
-@bp.route('/resource-types', methods=['GET'])
+@bp.route('/object-types', methods=['GET'])
 def get_resource_types():
     try:
-        db = g.get_db()
-        resource_types= db.execute("SELECT id, name FROM resource_types").fetchall()
-        resource_types_json = [{'id': row[0], 'name': row[1]} for row in resource_types]
-        db.close()
-        return jsonify(resource_types_json)
+        object_types = db.session.query(ObjectCategory).all()
+        return jsonify(object_types)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

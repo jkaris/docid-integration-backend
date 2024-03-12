@@ -45,6 +45,7 @@ def insert_data():
     db.session.add_all(OBJECT_CATEGORIES)
     db.session.add_all(DATASET_TYPES)
     db.session.commit()
+    db.session.close()
 
 
 def generate_pids():
@@ -86,3 +87,4 @@ def generate_pids():
 
     # Commit the changes to the database
     db.session.commit()
+    db.session.close()
