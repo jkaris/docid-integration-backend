@@ -5,6 +5,8 @@ from flask_cors import CORS
 from .db import db
 from .models import init_db
 
+from . import insert_data
+
 load_dotenv()
 
 
@@ -29,11 +31,11 @@ def create_app(test_config=None):
     # Create all database tables
     with docid_app.app_context():
         init_db()
-        # insert_data.insert_data()
-        # insert_data.generate_pids()
+        insert_data.insert_data()
+        insert_data.generate_pids()
     docid_app.register_blueprint(auth.bp)
     docid_app.register_blueprint(doi.bp)
-    # docid_app.register_blueprint(utils.bp)
+    docid_app.register_blueprint(utils.bp)
     docid_app.register_blueprint(save.bp)
 
     return docid_app

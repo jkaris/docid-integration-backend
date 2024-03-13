@@ -1,20 +1,30 @@
-# from flask import (
-#     Blueprint, request, jsonify, g
-# )
-#
-# from .db import db
-#
-# from .models import ObjectCategory
-#
-# bp = Blueprint('utils', __name__, url_prefix='/utils')
-#
-# @bp.route('/object-types', methods=['GET'])
-# def get_resource_types():
-#     try:
-#         object_types = db.session.query(ObjectCategory).all()
-#         return jsonify(object_types)
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
+from flask import (
+    Blueprint, request, jsonify, g
+)
+from .db import db
+from .models import ObjectCategory
+
+
+bp = Blueprint('utils', __name__, url_prefix='/utils')
+
+
+@bp.route('/object-types', methods=['GET'])
+def get_resource_types():
+    try:
+        object_types = db.session.query(ObjectCategory).all()
+        # Serialize each object type to a dictionary
+        serialized_object_types = []
+        for obj in object_types:
+            serialized_obj = {
+                'id': obj.object_category_id,
+                'name': obj.object_category_name,
+                'description': obj.object_category_description,
+                # Add other attributes here
+            }
+            serialized_object_types.append(serialized_obj)
+        return jsonify(serialized_object_types)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 #
 # @bp.route('/get-publications', methods=['GET'])
 # def get_publications():

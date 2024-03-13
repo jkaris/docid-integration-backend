@@ -37,13 +37,13 @@ class UserAccount(db.Model):
 #     object_type_id = db.Column(db.Integer, db.ForeignKey('object_category.object_category_id'))
 #
 #
-# class ObjectCategory(db.Model):
-#     __tablename__ = 'object_category'
-#     object_category_id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
-#     object_category_name = db.Column(db.String(100), nullable=False)
-#     object_category_description = db.Column(db.String(100), nullable=False)
-#
-#
+class ObjectCategory(db.Model):
+    __tablename__ = 'object_category'
+    object_category_id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
+    object_category_name = db.Column(db.String(100), nullable=False)
+    object_category_description = db.Column(db.String(100), nullable=False)
+
+
 # class ObjectDataset(db.Model):
 #     """
 #     Object dataset
@@ -114,34 +114,34 @@ class UserAccount(db.Model):
 #     docid_doi = db.Column(db.Integer, db.ForeignKey('docid_object.object_docid'))
 #
 #
-# class DocIdLookup(db.Model):
-#     """
-#     DocId lookup
-#     """
-#     __tablename__ = 'pid_lookup'
-#
-#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     name = db.Column(db.Text, nullable=False)
-#     description = db.Column(db.Text, nullable=False)
-#     pid = db.Column(db.Text, nullable=False, unique=True)
-#     pid_reserved = db.Column(db.Boolean, nullable=False, default=False)
-#     pid_reserved_date = db.Column(db.DateTime, default=datetime.utcnow)
-#     pid_reserved_by = db.Column(db.Integer, db.ForeignKey('app_user.user_id'))
-#     pid_assigned = db.Column(db.Boolean, nullable=False, default=False)
-#     pid_assigned_date = db.Column(db.DateTime, default=datetime.utcnow)
-#     pid_assigned_by = db.Column(db.Integer, db.ForeignKey('app_user.user_id'))
-#     docid_doi = db.Column(db.Integer, db.ForeignKey('docid_object.object_docid'))
-#
-#
-# class Language(db.Model):
-#     """
-#     Language lookup
-#     """
-#     __tablename__ = 'language'
-#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     name = db.Column(db.Text, nullable=False)
-#     short_name = db.Column(db.Text, nullable=False)
-#     description = db.Column(db.Text, nullable=False)
+class DocIdLookup(db.Model):
+    """
+    DocId lookup
+    """
+    __tablename__ = 'pid_lookup'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.Text, nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    pid = db.Column(db.Text, nullable=False, unique=True)
+    pid_reserved = db.Column(db.Boolean, nullable=False, default=False)
+    pid_reserved_date = db.Column(db.DateTime, default=datetime.utcnow)
+    # pid_reserved_by = db.Column(db.Integer, db.ForeignKey('app_user.user_id'))
+    pid_assigned = db.Column(db.Boolean, nullable=False, default=False)
+    pid_assigned_date = db.Column(db.DateTime, default=datetime.utcnow)
+    # pid_assigned_by = db.Column(db.Integer, db.ForeignKey('app_user.user_id'))
+    # docid_doi = db.Column(db.Integer, db.ForeignKey('docid_object.object_docid'))
+
+
+class Language(db.Model):
+    """
+    Language lookup
+    """
+    __tablename__ = 'language'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.Text, unique=True, nullable=False)
+    short_name = db.Column(db.Text, unique=True, nullable=False)
+    description = db.Column(db.Text, nullable=False)
 
 
 def init_db():
