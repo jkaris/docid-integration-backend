@@ -27,5 +27,5 @@ def generate_pids():
     generate_pids()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cli()

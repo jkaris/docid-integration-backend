@@ -1,20 +1,22 @@
 import requests
 from flask import (
-    Blueprint, jsonify,
+    Blueprint,
+    jsonify,
 )
 from sqlalchemy.sql import func
 from .db import db
 from .models import DocIdLookup
 
-bp = Blueprint('doi', __name__, url_prefix='/doi')
+bp = Blueprint("doi", __name__, url_prefix="/doi")
+
 
 @bp.route("/get-datacite-doi", methods=["GET"])
 def get_datacite_doi():
     try:
-        url = "https://api.test.datacite.org/dois?client_id=datacite.datacite&random=true"
-        headers = {
-            "Content-Type": "application/json"
-        }
+        url = (
+            "https://api.test.datacite.org/dois?client_id=datacite.datacite&random=true"
+        )
+        headers = {"Content-Type": "application/json"}
         repository_id, password = "FPAV", "Tremis#123$"
         response = requests.get(
             url=url,
@@ -31,16 +33,18 @@ def get_datacite_doi():
         return jsonify({"error": f"Failed to fetch datacite DOI: {str(e)}"}), 500
 
 
-@bp.route('/get-docid-doi', methods=['GET'])
+@bp.route("/get-docid-doi", methods=["GET"])
 def get_docid():
     """
     Get Doc ID from PID log table.
     """
     try:
-        random_datacite_pid = db.session.query(DocIdLookup).order_by(func.random()).first()
+        random_datacite_pid = (
+            db.session.query(DocIdLookup).order_by(func.random()).first()
+        )
         if random_datacite_pid:
-            return jsonify({'docid_doi': random_datacite_pid.pid[:7]})
+            return jsonify({"docid_doi": random_datacite_pid.pid[:7]})
         else:
-            return jsonify({'error': 'No random datacite DOI found'})
+            return jsonify({"error": "No random datacite DOI found"})
     except Exception as e:
-        return jsonify({'error': 'Failed to fetch datacite DOI: ' + str(e)})
+        return jsonify({"error": "Failed to fetch datacite DOI: " + str(e)})

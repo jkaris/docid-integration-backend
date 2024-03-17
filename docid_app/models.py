@@ -7,7 +7,8 @@ class UserAccount(db.Model):
     """
     User account
     """
-    __tablename__ = 'user_accounts'
+
+    __tablename__ = "user_accounts"
 
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_name = db.Column(db.String(100), nullable=False)
@@ -30,21 +31,28 @@ class DocIDObject(db.Model):
     """
     DocID Object
     """
-    __tablename__ = 'docid_objects'
+
+    __tablename__ = "docid_objects"
 
     object_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     object_docid = db.Column(db.Integer, unique=True, nullable=False)
-    object_category_id = db.Column(db.Integer, db.ForeignKey('object_categories.object_category_id'))
+    object_category_id = db.Column(
+        db.Integer, db.ForeignKey("object_categories.object_category_id")
+    )
     object_title = db.Column(db.String(100), nullable=False)
     object_description = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user_accounts.user_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey("user_accounts.user_id"))
     date_registered = db.Column(db.DateTime, default=datetime.utcnow)
-    object_type_id = db.Column(db.Integer, db.ForeignKey('object_categories.object_category_id'))
+    object_type_id = db.Column(
+        db.Integer, db.ForeignKey("object_categories.object_category_id")
+    )
 
 
 class ObjectCategory(db.Model):
-    __tablename__ = 'object_categories'
-    object_category_id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
+    __tablename__ = "object_categories"
+    object_category_id = db.Column(
+        db.Integer, primary_key=True, unique=True, nullable=False
+    )
     object_category_name = db.Column(db.String(100), nullable=False)
     object_category_description = db.Column(db.String(100), nullable=False)
 
@@ -53,22 +61,28 @@ class ObjectDataset(db.Model):
     """
     Object dataset
     """
-    __tablename__ = 'object_datasets'
 
-    object_dataset_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    __tablename__ = "object_datasets"
+
+    object_dataset_id = db.Column(
+        db.Integer, primary_key=True, autoincrement=True, nullable=False
+    )
     object_dataset_name = db.Column(db.String(100), nullable=False)
     object_dataset_description = db.Column(db.String(100), nullable=False)
     datacite_doi = db.Column(db.String(100), nullable=False)
     object_dataset_title = db.Column(db.String(100), nullable=False)
-    docid_doi = db.Column(db.Integer, db.ForeignKey('docid_objects.object_docid'))
-    object_dataset_type = db.Column(db.Integer, db.ForeignKey('object_dataset_types.object_dataset_type_id'))
+    docid_doi = db.Column(db.Integer, db.ForeignKey("docid_objects.object_docid"))
+    object_dataset_type = db.Column(
+        db.Integer, db.ForeignKey("object_dataset_types.object_dataset_type_id")
+    )
 
 
 class ObjectDataSetType(db.Model):
     """
     Object dataset types lookup table
     """
-    __tablename__ = 'object_dataset_types'
+
+    __tablename__ = "object_dataset_types"
 
     object_dataset_type_id = db.Column(db.Integer, primary_key=True)
     object_dataset_type_name = db.Column(db.String(100), nullable=False)
@@ -123,7 +137,8 @@ class DocIdLookup(db.Model):
     """
     DocId lookup
     """
-    __tablename__ = 'pid_lookup'
+
+    __tablename__ = "pid_lookup"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.Text, nullable=False)
@@ -142,7 +157,8 @@ class Language(db.Model):
     """
     Language lookup
     """
-    __tablename__ = 'language'
+
+    __tablename__ = "language"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.Text, unique=True, nullable=False)
     short_name = db.Column(db.Text, unique=True, nullable=False)
