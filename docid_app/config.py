@@ -1,7 +1,7 @@
 import os
 
 
-class BaseConfig(object):
+class BaseConfig:
     """Base config class"""
     SECRET_KEY = os.getenv("FLASK_SECRET_KEY", "9673acd10aa2e08ebbc99ccc5f39d7f3d81c9118c8c6e153cf2badcaf84b12b4")
     DEBUG = True
