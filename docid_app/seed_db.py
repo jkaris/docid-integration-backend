@@ -1,8 +1,8 @@
 from .models import (
     Language,
     ObjectCategory,
-    # ObjectDataSetType,
-    # UserAccount,
+    ObjectDataSetType,
+    UserAccount,
     DocIdLookup,
 )
 
@@ -30,15 +30,15 @@ OBJECT_CATEGORIES = [
 ]
 
 
-#
-# DATASET_TYPES = [
-#     ObjectDataSetType(object_dataset_type_name='Video', object_dataset_type_description='video dataset'),
-#     ObjectDataSetType(object_dataset_type_name='Webinar', object_dataset_type_description='webinar dataset'),
-#     ObjectDataSetType(object_dataset_type_name='Illustration', object_dataset_type_description='illustration dataset'),
-#     ObjectDataSetType(object_dataset_type_name='Interview', object_dataset_type_description='interview dataset'),
-#     ObjectDataSetType(object_dataset_type_name='Conference Proceeding',
-#                       object_dataset_type_description='conference proceeding dataset'),
-# ]
+
+DATASET_TYPES = [
+    ObjectDataSetType(object_dataset_type_name='Video', object_dataset_type_description='video dataset'),
+    ObjectDataSetType(object_dataset_type_name='Webinar', object_dataset_type_description='webinar dataset'),
+    ObjectDataSetType(object_dataset_type_name='Illustration', object_dataset_type_description='illustration dataset'),
+    ObjectDataSetType(object_dataset_type_name='Interview', object_dataset_type_description='interview dataset'),
+    ObjectDataSetType(object_dataset_type_name='Conference Proceeding',
+                      object_dataset_type_description='conference proceeding dataset'),
+]
 
 
 def insert_data():

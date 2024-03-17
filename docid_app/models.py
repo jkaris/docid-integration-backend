@@ -7,69 +7,74 @@ class UserAccount(db.Model):
     """
     User account
     """
-    __tablename__ = 'user_account'
+    __tablename__ = 'user_accounts'
 
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_name = db.Column(db.String(100), nullable=False)
     full_name = db.Column(db.String(100), nullable=False)
-    # github_id = db.Column(db.String(100), nullable=False)
-    # orcid_id = db.Column(db.String(100), nullable=False)
-    # openaire_id = db.Column(db.String(100), nullable=False)
+    github_id = db.Column(db.String(100), nullable=True)
+    orcid_id = db.Column(db.String(100), nullable=True)
+    openaire_id = db.Column(db.String(100), nullable=True)
     affiliation = db.Column(db.String(100), nullable=True)
     date_joined = db.Column(db.DateTime, default=datetime.utcnow)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
 
+    # def __init__(self, user_name, full_name, email):
+    #     self.user_name = user_name
+    #     self.full_name = full_name
+    #     self.email = email
 
-# class DocIDObject(db.Model):
-#     """
-#     DocID Object
-#     """
-#     __tablename__ = 'docid_object'
-#
-#     object_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     object_docid = db.Column(db.Integer, unique=True, nullable=False)
-#     object_category_id = db.Column(db.Integer, db.ForeignKey('object_category.object_category_id'))
-#     object_title = db.Column(db.String(100), nullable=False)
-#     object_description = db.Column(db.Text, nullable=False)
-#     user_id = db.Column(db.Integer, db.ForeignKey('app_user.user_id'))
-#     date_registered = db.Column(db.DateTime, default=datetime.utcnow)
-#     object_type_id = db.Column(db.Integer, db.ForeignKey('object_category.object_category_id'))
-#
-#
+
+class DocIDObject(db.Model):
+    """
+    DocID Object
+    """
+    __tablename__ = 'docid_objects'
+
+    object_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    object_docid = db.Column(db.Integer, unique=True, nullable=False)
+    object_category_id = db.Column(db.Integer, db.ForeignKey('object_categories.object_category_id'))
+    object_title = db.Column(db.String(100), nullable=False)
+    object_description = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user_accounts.user_id'))
+    date_registered = db.Column(db.DateTime, default=datetime.utcnow)
+    object_type_id = db.Column(db.Integer, db.ForeignKey('object_categories.object_category_id'))
+
+
 class ObjectCategory(db.Model):
-    __tablename__ = 'object_category'
+    __tablename__ = 'object_categories'
     object_category_id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
     object_category_name = db.Column(db.String(100), nullable=False)
     object_category_description = db.Column(db.String(100), nullable=False)
 
 
-# class ObjectDataset(db.Model):
-#     """
-#     Object dataset
-#     """
-#     __tablename__ = 'object_dataset'
-#
-#     object_dataset_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-#     object_dataset_name = db.Column(db.String(100), nullable=False)
-#     object_dataset_description = db.Column(db.String(100), nullable=False)
-#     datacite_doi = db.Column(db.String(100), nullable=False)
-#     object_dataset_title = db.Column(db.String(100), nullable=False)
-#     docid_doi = db.Column(db.Integer, db.ForeignKey('docid_object.object_docid'))
-#     object_dataset_type = db.Column(db.Integer, db.ForeignKey('object_dataset_type.object_dataset_type_id'))
-#
-#
-# class ObjectDataSetType(db.Model):
-#     """
-#     Object dataset types lookup table
-#     """
-#     __tablename__ = 'object_dataset_type'
-#
-#     object_dataset_type_id = db.Column(db.Integer, primary_key=True)
-#     object_dataset_type_name = db.Column(db.String(100), nullable=False)
-#     object_dataset_type_description = db.Column(db.String(100), nullable=False)
-#
-#
+class ObjectDataset(db.Model):
+    """
+    Object dataset
+    """
+    __tablename__ = 'object_datasets'
+
+    object_dataset_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    object_dataset_name = db.Column(db.String(100), nullable=False)
+    object_dataset_description = db.Column(db.String(100), nullable=False)
+    datacite_doi = db.Column(db.String(100), nullable=False)
+    object_dataset_title = db.Column(db.String(100), nullable=False)
+    docid_doi = db.Column(db.Integer, db.ForeignKey('docid_objects.object_docid'))
+    object_dataset_type = db.Column(db.Integer, db.ForeignKey('object_dataset_types.object_dataset_type_id'))
+
+
+class ObjectDataSetType(db.Model):
+    """
+    Object dataset types lookup table
+    """
+    __tablename__ = 'object_dataset_types'
+
+    object_dataset_type_id = db.Column(db.Integer, primary_key=True)
+    object_dataset_type_name = db.Column(db.String(100), nullable=False)
+    object_dataset_type_description = db.Column(db.String(100), nullable=False)
+
+
 # class ObjectFile(db.Model):
 #     """
 #     Object file
@@ -81,8 +86,8 @@ class ObjectCategory(db.Model):
 #     file_title = db.Column(db.String(100), nullable=False)
 #     file_description = db.Column(db.String(100), nullable=False)
 #     docid_doi = db.Column(db.Integer, db.ForeignKey('docid_object.object_docid'))
-#
-#
+
+
 # class ObjectOrganization(db.Model):
 #     """
 #     Object organization
@@ -96,8 +101,8 @@ class ObjectCategory(db.Model):
 #     person_role = db.Column(db.String(100), nullable=False)
 #     ror_doi = db.Column(db.String(100), nullable=False)
 #     docid_doi = db.Column(db.Integer, db.ForeignKey('docid_object.object_docid'))
-#
-#
+
+
 # class ObjectIndividual(db.Model):
 #     """
 #     Object individual
@@ -112,8 +117,8 @@ class ObjectCategory(db.Model):
 #     person_role = db.Column(db.String(100), nullable=False)
 #     orcid_doi = db.Column(db.String(100), nullable=False)
 #     docid_doi = db.Column(db.Integer, db.ForeignKey('docid_object.object_docid'))
-#
-#
+
+
 class DocIdLookup(db.Model):
     """
     DocId lookup
@@ -142,8 +147,3 @@ class Language(db.Model):
     name = db.Column(db.Text, unique=True, nullable=False)
     short_name = db.Column(db.Text, unique=True, nullable=False)
     description = db.Column(db.Text, nullable=False)
-
-
-def init_db():
-    """Create database tables."""
-    db.create_all()
