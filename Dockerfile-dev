@@ -1,5 +1,9 @@
 FROM python:3.10.12-bullseye
 
+RUN apt-get update -y && apt-get upgrade -y
+
+RUN apt-get install -y netcat libpq-dev
+
 # Set working directory
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
@@ -16,5 +20,5 @@ RUN pipenv install --dev --system
 # Add app
 COPY . /usr/src/app
 
-# Run server
-CMD python manage.py run -h 0.0.0.0
+# run server
+CMD ["./entrypoint.sh"]
