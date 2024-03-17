@@ -11,7 +11,7 @@ load_dotenv()
 
 
 def create_app(test_config=None):
-    docid_app = Flask(__name__, instance_relative_config=True)
+    docid_app = Flask(__name__)
     docid_app.config.from_prefixed_env()
     docid_app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     docid_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -33,6 +33,7 @@ def create_app(test_config=None):
         init_db()
         insert_data.insert_data()
         insert_data.generate_pids()
+    # Register blueprints
     docid_app.register_blueprint(auth.bp)
     docid_app.register_blueprint(doi.bp)
     docid_app.register_blueprint(utils.bp)
