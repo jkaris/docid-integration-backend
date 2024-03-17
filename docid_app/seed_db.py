@@ -2,15 +2,15 @@ from .models import (
     Language,
     ObjectCategory,
     ObjectDataSetType,
-    AppUser,
+    UserAccount,
     DocIdLookup,
 )
 
 from .db import db
 from datetime import datetime
 
-DEFAULT_USER = AppUser(first_name="Default", last_name="User", affiliation="No affiliation", date_joined=datetime.utcnow(),
-            email="default@email.com", password="somepassword123_")
+# DEFAULT_USER = AppUser(first_name="Default", last_name="User", affiliation="No affiliation", date_joined=datetime.utcnow(),
+#             email="default@email.com", password="somepassword123_")
 
 LANGUAGES = [
     Language(name='English', short_name="en", description="English language"),
@@ -29,6 +29,8 @@ OBJECT_CATEGORIES = [
 
 ]
 
+
+
 DATASET_TYPES = [
     ObjectDataSetType(object_dataset_type_name='Video', object_dataset_type_description='video dataset'),
     ObjectDataSetType(object_dataset_type_name='Webinar', object_dataset_type_description='webinar dataset'),
@@ -40,11 +42,23 @@ DATASET_TYPES = [
 
 
 def insert_data():
-    db.session.add(DEFAULT_USER)
-    db.session.add_all(LANGUAGES)
-    db.session.add_all(OBJECT_CATEGORIES)
-    db.session.add_all(DATASET_TYPES)
+    existing_languages = [record.name for record in
+                          db.session.query(Language).filter(
+                              Language.name.in_(record.name for record in LANGUAGES)).all()]
+    languages_to_insert = [record for record in LANGUAGES if record.name not in existing_languages]
+
+    existing_obj_categories = [record.object_category_name for record in
+                               db.session.query(ObjectCategory).filter(
+                                   ObjectCategory.object_category_name.in_(
+                                       record.object_category_name for record in OBJECT_CATEGORIES)).all()]
+    obj_categories_to_insert = [record for record in OBJECT_CATEGORIES if
+                                record.object_category_name not in existing_obj_categories]
+    db.session.add_all(languages_to_insert)
+    # db.session.add(DEFAULT_USER)
+    db.session.add_all(obj_categories_to_insert)
+    # db.session.add_all(DATASET_TYPES)
     db.session.commit()
+    db.session.close()
 
 
 def generate_pids():
@@ -61,11 +75,11 @@ def generate_pids():
         pid = f"20.{n:04d}/{n:04d}"
         pid_reserved = False
         pid_reserved_date = datetime.utcnow()
-        pid_reserved_by = 1
+        # pid_reserved_by = 1
         pid_assigned = False
         pid_assigned_date = datetime.utcnow()
-        pid_assigned_by = 1
-        docid_doi = None
+        # pid_assigned_by = 1
+        # docid_doi = None
         # Create an instance of the model with the field values
         record = DocIdLookup(
             name=name,
@@ -73,16 +87,21 @@ def generate_pids():
             pid=pid,
             pid_reserved=pid_reserved,
             pid_reserved_date=pid_reserved_date,
-            pid_reserved_by=pid_reserved_by,
+            # pid_reserved_by=pid_reserved_by,
             pid_assigned=pid_assigned,
             pid_assigned_date=pid_assigned_date,
-            pid_assigned_by=pid_assigned_by,
-            docid_doi=docid_doi
+            # pid_assigned_by=pid_assigned_by,
+            # docid_doi=docid_doi
         )
         records.append(record)
+    existing_records = [record.pid for record in
+                        db.session.query(DocIdLookup).filter(
+                            DocIdLookup.pid.in_(record.pid for record in records)).all()]
+    records_to_insert = [record for record in records if record.pid not in existing_records]
 
     # Add all records to the session
-    db.session.add_all(records)
+    db.session.add_all(records_to_insert)
 
     # Commit the changes to the database
     db.session.commit()
+    db.session.close()

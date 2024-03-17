@@ -1,3 +1,9 @@
+# Exclude version control system files and directories
+.git
+.gitignore
+.idea
+.vscode
+
 # Python-related
 __pycache__
 *.pyo
@@ -33,3 +39,11 @@ build/
 # Dependency management files
 pip-log.txt
 pip-delete-this-directory.txt
+
+# Exclude other unnecessary files and directories
+node_modules
+*.tmp
+.DS_Store
+
+db.sqlite
+db.sqlite3

@@ -5,7 +5,7 @@ from flask import (
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from .models import AppUser
+from .models import UserAccount
 from .db import db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -15,22 +15,19 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 def register():
     data = request.json
     error = None
-    first_name = data.get('firstName')
-    last_name = data.get('lastName')
-    email = data.get('email')
-    password = data.get('password')
-
-    # Check if the username or email already exists
-    existing_email = AppUser.query.filter_by(email=email).first()
-    if existing_email:
+    user_name = data.get('userName')
+    user_full_name = data.get('userFullName')
+    user_affiliations = data.get('userAffiliations')
+    user_email = data.get('userEmail')
+    user_password = data.get('userPassword')
+    existing_user = UserAccount.query.filter(
+        (UserAccount.email == user_email) | (UserAccount.user_name == user_name)).first()
+    if existing_user:
         error = 'User already exists'
         return jsonify({'message': error}), 400
-
-    # Hash the password
-    hashed_password = generate_password_hash(password)
-
-    # Create a new user object
-    new_user = AppUser(first_name=first_name, last_name=last_name, email=email, password=hashed_password)
+    hashed_password = generate_password_hash(user_password)
+    new_user = UserAccount(user_name=user_name, full_name=user_full_name, affiliation=user_affiliations,
+                           email=user_email, password=hashed_password)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({'message': 'Registration successful'})
@@ -40,11 +37,11 @@ def register():
 def login():
     data = request.json
     error = None
-    email = data.get('email')
-    password = data.get('password')
-    user = AppUser.query.filter(AppUser.email == email).first()
+    user_email = data.get('userEmail')
+    user_password = data.get('userPassword')
+    user = UserAccount.query.filter(UserAccount.email == user_email).first()
 
-    if user and check_password_hash(user.password, password):
+    if user and check_password_hash(user.password, user_password):
         session['user_id'] = user.user_id
         return jsonify({'message': 'Login successful'})
     else:
