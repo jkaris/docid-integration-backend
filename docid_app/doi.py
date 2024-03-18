@@ -12,6 +12,9 @@ bp = Blueprint("doi", __name__, url_prefix="/doi")
 
 @bp.route("/get-datacite-doi", methods=["GET"])
 def get_datacite_doi():
+    """
+        Get DataCite DOI from DataCite API.
+    """
     try:
         url = (
             "https://api.test.datacite.org/dois?client_id=datacite.datacite&random=true"
@@ -39,12 +42,12 @@ def get_docid():
     Get Doc ID from PID log table.
     """
     try:
-        random_datacite_pid = (
+        random_docid_pid = (
             db.session.query(DocIdLookup).order_by(func.random()).first()
         )
-        if random_datacite_pid:
-            return jsonify({"docid_doi": random_datacite_pid.pid[:7]})
+        if random_docid_pid:
+            return jsonify({"docid_doi": random_docid_pid.pid[:7]})
         else:
-            return jsonify({"error": "No random datacite DOI found"})
+            return jsonify({"error": "No random DocID DOI found"})
     except Exception as e:
-        return jsonify({"error": "Failed to fetch datacite DOI: " + str(e)})
+        return jsonify({"error": "Failed to fetch DocID DOI: " + str(e)})
