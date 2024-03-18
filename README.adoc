@@ -2,7 +2,7 @@
 
 = DOCID Integration Backend
 
-image::images/docid-app.png[alt="DOCID Integration App"]
+image::docid-integration-app.png[alt="DOCID Integration App"]
 
 == Project Overview
 
