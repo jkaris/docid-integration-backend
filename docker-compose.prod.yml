@@ -5,17 +5,16 @@ services:
         container_name: docid-backend
         build:
             context: ./
-            dockerfile: Dockerfile-dev
+            dockerfile: Dockerfile-prod
         environment:
             - FLASK_APP=docid_app/__init__.py
-            - FLASK_DEBUG=1
-            - APP_SETTINGS=docid_app.config.DevelopmentConfig
+            - FLASK_DEBUG=0
+            - APP_SETTINGS=docid_app.config.ProductionConfig
             - DATABASE_URL=${DATABASE_URL}
-            - DATABASE_TEST_URL=${DATABASE_TEST_URL}
         volumes:
             - ./:/usr/src/app
-        ports:
-            - "5099:5000"
+        expose:
+            - "5000"
         depends_on:
             - docid-db
         links:
@@ -33,3 +32,14 @@ services:
             - POSTGRES_USER=${POSTGRES_USER}
             - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
         restart: on-failure
+
+    docid-nginx:
+        build:
+            context: ./nginx
+            dockerfile: Dockerfile
+        container_name: docid-nginx
+        ports:
+            - "80:80"
+        depends_on:
+            - docid-backend
+        restart: always

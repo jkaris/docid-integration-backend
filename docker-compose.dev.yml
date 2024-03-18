@@ -10,8 +10,8 @@ services:
             - FLASK_APP=docid_app/__init__.py
             - FLASK_DEBUG=1
             - APP_SETTINGS=docid_app.config.DevelopmentConfig
-            - DATABASE_URL=postgresql://postgres:postgres@docid-db:5432/users_dev
-            - DATABASE_TEST_URL=postgresql://postgres:postgres@docid-db:5432/users_test
+            - DATABASE_URL=${DATABASE_URL}
+            - DATABASE_TEST_URL=${DATABASE_TEST_URL}
         volumes:
             - ./:/usr/src/app
         ports:
@@ -30,6 +30,6 @@ services:
         ports:
             - "5498:5432"
         environment:
-            - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_USER=${POSTGRES_USER}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
         restart: on-failure
