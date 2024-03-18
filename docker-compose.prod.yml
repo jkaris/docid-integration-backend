@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+    docid-backend:
+        container_name: docid-backend
+        build:
+            context: ./
+            dockerfile: Dockerfile-dev
+        environment:
+            - FLASK_APP=docid_app/__init__.py
+            - FLASK_DEBUG=1
+            - APP_SETTINGS=docid_app.config.DevelopmentConfig
+            - DATABASE_URL=${DATABASE_URL}
+            - DATABASE_TEST_URL=${DATABASE_TEST_URL}
+        volumes:
+            - ./:/usr/src/app
+        ports:
+            - "5099:5000"
+        depends_on:
+            - docid-db
+        links:
+            - docid-db
+        restart: always
+
+    docid-db:
+        container_name: docid-db
+        build:
+            context: ./db
+            dockerfile: Dockerfile
+        ports:
+            - "5498:5432"
+        environment:
+            - POSTGRES_USER=${POSTGRES_USER}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+        restart: on-failure
