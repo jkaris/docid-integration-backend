@@ -6,10 +6,11 @@ image::docid-integration-app.png[alt="DOCID Integration App"]
 
 == Project Overview
 
-Add overview here
+Considering the fast and growing need for scholarly data infrastructures in Africa, and the diverse economic development in the continent. The reality is that some universities can afford DOIs but not for all scholarly and research output, while the bulk of research content is in gray literature in Africa. Adding to that the unicity of what the APA RA would like to specialize in, which is indigenous knowledge and cultural heritage, and patent digital object containers.
 
 === Structure Overview
-TBD
+This project is split into two parts – the back end (written in Python &amp;
+Flask), and the front-end (written in JavaScript &amp; React) in a separate repository.
 
 The general folder structure for the project can be seen below:
 
@@ -33,30 +34,45 @@ commands is provided. In order to run these commands, the GNU `make` utility
 needs to be installed. Some of the commands are listed below.
 
 ==== System Prerequisites
-TBD
+This application leverages microservices approach where each service runs in its own container. The services include:
+
+* link:https://www.postgresql.org/docs/16/index.html[PostgreSQL] - The database that facilitates storage, retrieval and updating of information.
+* link:https://flask.palletsprojects.com/[Python/Flask] - This is the backend service for the application which provides a rich application programming interface (API) endpoints through which the frontend app communicates.
+* link:https://nginx.org/en/docs/[Nginx] - A highly scalable server that serves the front end and backend applications via a proxy server. It is suited for both test and production deployment environments.
+
+You need docker installed to deploy this app. Please refer to the link:https://docs.docker.com/[docker documentation] for installation 
+details.
 
 TIP:  Please refer to
-TBD
+https://docs.docker.com/install/[Docker installation docs] and +
+https://docs.docker.com/compose/install/[Docker Compose
+installation docs] to install them.
 
 === Software
-TBD
-
-All Python package requirements are listed in
+This back-end project consists of _Python/Flask_, _Nginx_ and _PostgreSQL_ services. There is a list of Python third-party libraries listed in
 link:Pipfile[`Pipfile`]. The initial requirements include:
 
-* 123
-* 456
-
-All third-party packages are listed in the link:Pipfile[Pipfile] including the ones not listed here.
+* https://flask.palletsprojects.com/[Flask] a lightweight and flexible web framework for Python. It is designed to make it easy to build web applications and APIs quickly and with minimal boilerplate code.
+* https://github.com/theskumar/python-dotenv[python-dotenv]
+ for management of environment variables
+* https://requests.readthedocs.io//[requests] for handling of HTTP requests
+* https://flask-sqlalchemy.palletsprojects.com/[flask-sqlalchemy] for adding SQLAlchemy funtionality such as Object Relational Mapper (ORM) capabilities to the application
+* https://github.com/miguelgrinberg/flask-migrate[flask-migrate] for handling database migrations
+* https://github.com/corydolphin/flask-cors[flask-cors] for handling Cross Origin Resource Sharing (CORS) requests.
+* https://www.psycopg.org/docs/[psycopg2-binary] to provide PostgreSQL database connectivity and integration
+* https://gunicorn.org/[gunicorn] for serving the application via HTTP and WSGI protocols
+* https://github.com/psf/black[black] for code formatting
+* https://coverage.readthedocs.io/en/7.4.4[coverage] measures code coverage, typically during test execution.
+* https://docs.pytest.org/en/latest/[pytest] for testing, from simple to complex tests on application code.
 
 === QuickStart
-TBD
+As a first mandatory step, rename the link:.env_sample[.env_sample] to **.env** and add the necessary values to each environment variable.
 
 To build and setup the application from the ground up, ignoring previously build cached layers, just type:
 
 [source,bash]
 ----
-flask --app docid_app run --debug
+make build-with-no-cache
 ----
 
 You can also build with the usual build command by typing:
@@ -72,87 +88,88 @@ To start the services while seeing the log, type:
 
 [source,bash]
 ----
-make start-app
+make start-services
 ----
 Alternatively, to start the services in the background (detached mode) where you will not see the logs in the terminal, type:
 [source,bash]
 ----
-make start-app-detached
+make start-services-detached
 ----
-Once the services have started, Flask should be running in port 8000 and Postgres at 5432. You can change these values in the .env file and link:docker-compose.dev.yml[docker-compose] file.
+Once the services have started, Flask should be running Postgres, and Nginx in production. You can change these values in the link:docker-compose.dev.yml[docker-compose.dev] file.
+
+To create database tables, run:
+[source,bash]
+----
+make create-db
+----
+
+To populate tables and lookups, run:
+[source,bash]
+----
+make insert-data
+----
+
+To generate and populate PID lookup table:
+[source,bash]
+----
+make populate-pids
+----
 
 To stop the services, type:
 [source,bash]
 ----
-make stop-app
+make stop-services
 ----
 
 Alternatively, to stop services and remove volumes that contain persisted data, type:
 [source,bash]
 ----
-make delete-app-volumes
+make stop-delete-volumes
 ----
 
 To print out the logs, type:
 [source,bash]
 ----
-make print-logs
+make show-logs
 ----
 
 Alternatively, to print out logs interactively showing what is happening in the services, type:
 [source,bash]
 ----
-make print-logs-interactive
+make show-interactive-logs
 ----
 
 The other commands include:
 
-* `make init-app-db` which creates new database migration files based on the changes you make to your models, if any.
-* `make shell` which starts a Linux shell (bash) in the app container
-* `make app-shell` which starts a flask python shell in the app container
-
-==== Database
-
-To start the database will be empty.
-
-To manually migrate the database, run:
-
-----
-make init-app-db
-----
-
-
-===== Application data
-
-TBD
+* `make python-shell` for entering into the flask app container bash shell.
+* `make db-shell` for entering into database container bash shell
 
 === Linting
 
 https://github.com/psf/black[Black] is used to automatically format and lint
-files. The `make lint-check` command checks that the project is correctly
+files. The `make format-python` command checks that the project is correctly
 formatted.
-
-You can set up your editor to automatically format Python files using Black
-following the instructions https://github.com/psf/black#editor-integration[on Black's GitHub
-page].
-
-You can also use the `make lint-fix` command to automatically format all
-Python files in the project.
 
 === Testing
 
-TBD
+Work-in-progress
 
 === REST API
 
-TBD
+Work-in-progress
 
 ==== API Documentation
 
-To access the API documentation, visit:
-
-TBD
+Work-in-progress
 
 ===== Endpoints
 
-TBD
+The endpoints provided by the app include:
+
+* **Root** - / this can be utilized to confirm that the app is running. It should display a JSON output which is a welcome message
+* **Login** - auth/login/ which provides login 
+* **Logout** - auth/logout/ which provides logout
+* **DataCite DOI** - doi/get-datacite-doi/ which provides generation of a Datacite DOI from the DataCite API (credentials required)
+* **DOCID DOI** - doi/get-ddocid-doi/ which provides DocID DOI from prepopulated data
+
+
