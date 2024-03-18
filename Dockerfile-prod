@@ -1,0 +1,24 @@
+FROM python:3.10.12-slim-buster
+
+RUN apt-get update -y && apt-get upgrade -y
+
+RUN apt-get install -y netcat libpq-dev
+
+# Set working directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Install pipenv
+RUN pip install pipenv
+
+# Add requirements
+COPY Pipfile Pipfile.lock /usr/src/app/
+
+# Install dependencies
+RUN pipenv install --dev --system
+
+# Add app
+COPY . /usr/src/app
+
+# run server
+CMD ["./entrypoint-prod.sh"]
