@@ -1,6 +1,6 @@
 DOCKER_COMPOSE = docker-compose
-DOCKER_COMPOSE_DEV_FILE = docker-compose-dev.yml
-DOCKER_COMPOSE_PROD_FILE = docker-compose-prod.yml
+DOCKER_COMPOSE_DEV_FILE = docker-compose.dev.yml
+DOCKER_COMPOSE_PROD_FILE = docker-compose.prod.yml
 
 # Commands
 .PHONY: build
@@ -8,43 +8,47 @@ build:
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_DEV_FILE) build
 
 .PHONY: build-no-cache
-build:
+build-no-cache:
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_DEV_FILE) build --no-cache
 
 .PHONY: create-db
-build:
+create-db:
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_DEV_FILE) run docid-backend python manage.py recreate_db
 
-.PHONY: up
-up:
+.PHONY: start-services-detached
+start-services-detached:
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_DEV_FILE) up -d
 
-.PHONY: down
-down:
+.PHONY: stop-services
+stop-services:
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_DEV_FILE) down
 
-.PHONY: down-volumes
-down:
+.PHONY: stop-delete-volumes
+stop-delete-volumes:
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_DEV_FILE) down -v
 
-.PHONY: restart
-restart: down up
+.PHONY: restart-services
+restart-services: stop-services start-services-detached
 
-.PHONY: logs
-logs:
+.PHONY: show-interactive-logs
+show-interactive-logs:
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_DEV_FILE) logs -f
 
-.PHONY: test
-test:
+.PHONY: run-tests
+run-tests:
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_DEV_FILE) run --rm docid-backend test
 
-.PHONY: format
-lint:
+.PHONY: format-python
+format-python:
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_DEV_FILE) run --rm docid-backend python black .
 
-.PHONY: shell
-shell:
-	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_DEV_FILE) run --rm docid-backend /bin/bash
+.PHONY: db-shell
+db-shell:
+	@docker exec -ti docid-db psql -U postgres
+
+.PHONY: python-shell
+python-shell:
+	@docker exec -ti docid-backend bash
 
 .PHONY: db-migrate
 db-migrate:
@@ -59,9 +63,9 @@ db-downgrade:
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_DEV_FILE) run --rm docid-backend flask db downgrade
 
 .PHONY: populate-pids
-build:
+populate-pids:
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_DEV_FILE) run docid-backend python manage.py generate_pids
 
 .PHONY: insert-data
-build:
-	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_DEV_FILE) run docid-backend python manage.py insert_data
+insert-data:
+	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_DEV_FILE) run docid-backend python manage.py insert_datas
