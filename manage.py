@@ -23,7 +23,7 @@ def insert_datas():
 
 @cli.command("generate_pids")
 @click.command()
-def generate_pids():
+def generate_pidss():
     generate_pids()
 
 
