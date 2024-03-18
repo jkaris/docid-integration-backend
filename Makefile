@@ -15,6 +15,10 @@ build-no-cache:
 create-db:
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_DEV_FILE) run docid-backend python manage.py recreate_db
 
+.PHONY: start-services
+start-services:
+	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_DEV_FILE) up
+
 .PHONY: start-services-detached
 start-services-detached:
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_DEV_FILE) up -d
