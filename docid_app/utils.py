@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, g
 from .db import db
-from .models import ObjectCategory
+from .models import ObjectCategory, Language
 
 
 bp = Blueprint("utils", __name__, url_prefix="/utils")
@@ -21,6 +21,26 @@ def get_resource_types():
             }
             serialized_object_types.append(serialized_obj)
         return jsonify(serialized_object_types)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@bp.route("/languages", methods=["GET"])
+def get_languages():
+    try:
+        languages = db.session.query(Language).all()
+        # Serialize each object type to a dictionary
+        serialized_languages = []
+        for language in languages:
+            serialized_language = {
+                "id": language.id,
+                "name": language.name,
+                "short_name": language.short_name,
+                "description": language.description,
+                # Add other attributes here
+            }
+            serialized_languages.append(serialized_language)
+        return jsonify(serialized_languages)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
