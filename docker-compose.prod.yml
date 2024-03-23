@@ -33,13 +33,13 @@ services:
             - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
         restart: on-failure
 
-    docid-nginx:
-        build:
-            context: ./nginx
-            dockerfile: Dockerfile
-        container_name: docid-nginx
-        ports:
-            - "80:80"
-        depends_on:
-            - docid-backend
-        restart: always
+#    docid-nginx:
+#        build:
+#            context: ./nginx
+#            dockerfile: Dockerfile
+#        container_name: docid-nginx
+#        ports:
+#            - "80:80"
+#        depends_on:
+#            - docid-backend
+#        restart: always

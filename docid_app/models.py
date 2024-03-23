@@ -21,10 +21,12 @@ class UserAccount(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
 
-    # def __init__(self, user_name, full_name, email):
-    #     self.user_name = user_name
-    #     self.full_name = full_name
-    #     self.email = email
+
+class PublicationFormData(db.Model):
+    __tablename__ = 'publications'
+
+    id = db.Column(db.Integer, primary_key=True)
+    data = db.Column(db.JSON)
 
 
 class DocIDObject(db.Model):
@@ -36,25 +38,10 @@ class DocIDObject(db.Model):
 
     object_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     object_docid = db.Column(db.Integer, unique=True, nullable=False)
-    object_category_id = db.Column(
-        db.Integer, db.ForeignKey("object_categories.object_category_id")
-    )
     object_title = db.Column(db.String(100), nullable=False)
     object_description = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user_accounts.user_id"))
     date_registered = db.Column(db.DateTime, default=datetime.utcnow)
-    object_type_id = db.Column(
-        db.Integer, db.ForeignKey("object_categories.object_category_id")
-    )
-
-
-class ObjectCategory(db.Model):
-    __tablename__ = "object_categories"
-    object_category_id = db.Column(
-        db.Integer, primary_key=True, unique=True, nullable=False
-    )
-    object_category_name = db.Column(db.String(100), nullable=False)
-    object_category_description = db.Column(db.String(100), nullable=False)
 
 
 class ObjectDataset(db.Model):
