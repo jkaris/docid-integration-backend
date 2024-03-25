@@ -45,9 +45,8 @@ def get_docid():
         random_docid_pid = (
             db.session.query(DocIdLookup).order_by(func.random()).first()
         )
-        if random_docid_pid:
-            return jsonify({"docid_doi": random_docid_pid.pid[:7]})
-        else:
-            return jsonify({"error": "No random DocID DOI found"})
+        return jsonify({"docid_doi": random_docid_pid.pid[:7]})
+        # else:
+        #     return jsonify({"error": "No random DocID DOI found"})
     except Exception as e:
         return jsonify({"error": "Failed to fetch DocID DOI: " + str(e)})

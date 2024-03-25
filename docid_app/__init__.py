@@ -21,11 +21,12 @@ def create_app(test_config=None):
     def index():
         return jsonify("Welcome to the DOCID Integration app!")
 
-    from . import auth, doi, utils
+    from . import auth, doi, utils, save
     db.init_app(app)
     app.register_blueprint(auth.bp)
     app.register_blueprint(doi.bp)
     app.register_blueprint(utils.bp)
+    app.register_blueprint(save.bp)
     # docid_app.register_blueprint(save.bp)
 
     return app

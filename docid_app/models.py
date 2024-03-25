@@ -26,7 +26,9 @@ class PublicationFormData(db.Model):
     __tablename__ = 'publications'
 
     id = db.Column(db.Integer, primary_key=True)
-    data = db.Column(db.JSON)
+    form_data = db.Column(db.JSON)
+    user_id = db.Column(db.String(100))
+    published = db.Column(db.DateTime, default=datetime.utcnow)
 
 
 class DocIDObject(db.Model):
@@ -139,14 +141,3 @@ class DocIdLookup(db.Model):
     # pid_assigned_by = db.Column(db.Integer, db.ForeignKey('app_user.user_id'))
     # docid_doi = db.Column(db.Integer, db.ForeignKey('docid_object.object_docid'))
 
-
-class Language(db.Model):
-    """
-    Language lookup
-    """
-
-    __tablename__ = "language"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.Text, unique=True, nullable=False)
-    short_name = db.Column(db.Text, unique=True, nullable=False)
-    description = db.Column(db.Text, nullable=False)

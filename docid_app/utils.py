@@ -1,69 +1,40 @@
-from flask import Blueprint, request, jsonify, g
-from .db import db
-from .models import Language
-
+from flask import Blueprint, request, jsonify
+from .models import PublicationFormData
 
 bp = Blueprint("utils", __name__, url_prefix="/utils")
 
-@bp.route("/languages", methods=["GET"])
-def get_languages():
+
+@bp.route('/get-publications/all', methods=['GET'])
+def get_all_publications():
     try:
-        languages = db.session.query(Language).all()
-        # Serialize each object type to a dictionary
-        serialized_languages = []
-        for language in languages:
-            serialized_language = {
-                "id": language.id,
-                "name": language.name,
-                "short_name": language.short_name,
-                "description": language.description,
-                # Add other attributes here
-            }
-            serialized_languages.append(serialized_language)
-        return jsonify(serialized_languages)
+        data = PublicationFormData.query.all()
+        if len(data) == 0:
+            return jsonify({'message': 'No matching records found'}), 404
+        data_list = [{'id': item.id, 'data': item.form_data} for item in data]
+        return jsonify(data_list)
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({'error': str(e)}), 500
 
 
-#
-# @bp.route('/get-publications', methods=['GET'])
-# def get_publications():
-#     try:
-#         db = get_db()
-#         publications = db.execute("SELECT bi.*, fr.file_name, fr.file_path FROM basic_information bi JOIN file_record fr ON bi.file_id=fr.id").fetchall()
-#         publications_json = [{'id': row["id"], 'title': row["title"], 'doi': row['doi'], 'file_name': row['file_name']} for row in publications]
-#         return jsonify(publications_json)
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
-#
-# from flask import request
-#
-# @bp.route('/get-publication/<int:publication_id>', methods=['GET'])
-# def get_publication(publication_id):
-#     try:
-#         db = get_db()
-#         publication = db.execute("SELECT bi.*, fr.file_name, fr.file_path FROM basic_information bi JOIN file_record fr ON bi.file_id=fr.id WHERE bi.id = ?", (publication_id,)).fetchone()
-#         if publication:
-#             publication_json = {
-#                 'id': publication["id"],
-#                 'title': publication["title"],
-#                 'doi': publication['doi'],
-#                 'file_name': publication['file_name']
-#             }
-#             return jsonify(publication_json)
-#         else:
-#             return jsonify({'error': 'Publication not found'}), 404
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
-#
-#
-# @bp.route('/get-publications/<title>', methods=['GET'])
-# def get_publications_title(title):
-#     try:
-#         publication = f"%{title}%"
-#         db = get_db()
-#         publications = db.execute("SELECT * FROM basic_information WHERE LOWER(title) LIKE ? LIMIT 10", (publication,)).fetchall()
-#         publications_json = [{'id': row["id"], 'title': row["title"]} for row in publications]
-#         return jsonify(publications_json)
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
+@bp.route('/get-publication/<int:publication_id>', methods=['GET'])
+def get_publication(publication_id):
+    try:
+        data = PublicationFormData.query.get(publication_id)
+        if not data:
+            return jsonify({'message': 'No matching records found'}), 404
+        return jsonify({'id': data.id, 'data': data.form_data})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@bp.route('/get-publications/<title>', methods=['GET'])
+def get_publications_title(title):
+    try:
+        data = PublicationFormData.query.filter(PublicationFormData.form_data.op('->>')('title').like(f"%{title}%")).all()
+        if len(data) == 0:
+            return jsonify({'message': 'No matching records found'}), 404
+        data_list = [{'id': item.id, 'data': item.form_data} for item in data]
+        return jsonify(data_list)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
