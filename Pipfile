@@ -14,7 +14,7 @@ psycopg2-binary = "~=2.9.9"
 gunicorn = "~=22.0.0"
 
 [dev-packages]
-black = "~=24.2.0"
+black = "~=24.3.0"
 coverage = "~=7.4.3"
 pytest = "~=8.1.1"
 
